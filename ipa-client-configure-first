@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -xe
 
 function usage () {
 	if [ -n "$1" ] ; then
@@ -31,13 +31,21 @@ function stop_running () {
 }
 trap stop_running TERM
 
-systemctl stop dbus.service
+# Set up ssh host keys
+ssh-keygen -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
+ssh-keygen -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
+ssh-keygen -N "" -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
+
+systemctl enable sshd.service
+systemctl enable dbus.service
+
 rm -rf /var/run/*.pid
 rm -f /run/systemctl-lite-running/*
 
-if [ -n "$IPA_PORT_53_UDP_ADDR" ] ; then
-	echo "nameserver $IPA_PORT_53_UDP_ADDR" > /etc/resolv.conf
-fi
+# Not desired for kubernetes deployment
+#if [ -n "$IPA_PORT_53_UDP_ADDR" ] ; then
+#	echo "nameserver $IPA_PORT_53_UDP_ADDR" > /etc/resolv.conf
+#fi
 
 if [ -f /etc/ipa/ca.crt ] ; then
 	HOSTNAME_IPA=$(cat /etc/hostname.ipa-client)
@@ -71,10 +79,16 @@ else
 			exit 1
 		fi
 	fi
-
-	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p admin -w "$PASSWORD" -U --enable-dns-updates < /dev/null
+	echo "Test ldap first"
+	ldapsearch -x -h ipa.default.svc.cluster.local  -b dc=cluster,dc=local uid=admin
+        echo "Enroll in FreeIPA."
+	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p admin -w "$PASSWORD" -U --enable-dns-updates --mkhomedir --force-join < /dev/null
 	cp -f /etc/hostname /etc/hostname.ipa-client
 	echo "FreeIPA-enrolled."
+        systemctl disable rhel-domainname.service
+        echo "Starting services after FreeIPA enrollment."
+	systemctl start-enabled
+        echo "started"
 fi
 
 if [ -z "$1" -o "$1" != "-s" ] ; then
