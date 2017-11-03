@@ -1,4 +1,13 @@
-# IPA-enrolled client in Docker
+# Pyrex ssh jumpbox
+
+This is a docker container which is enrolled in FreeIPA. If your user account is 
+loaded in FreeIPA, you should be able to log into this container with both your
+password and SSH pubkey.
+
+This container has been modified to work in Kubernetes.
+
+# Below is the original readme for freeipa-container
+## IPA-enrolled client in Docker
 
 This repository contains the Dockerfile and associated assets for
 building a Docker image from the official yum repo which can then be
@@ -7,7 +16,7 @@ on a host.
 
 To build the image, run in the root of the repository:
 
-    docker build -t freeipa-client .
+    docker build -t jumpbox .
 
 To run the container and have it automatically enroll to an IPA
 server, either link it to the freeipa-server container with alias
@@ -26,7 +35,7 @@ DNS server (possibly IPA server running DNS service).
 Alternatively, use `--link` with alias `ipa` to point the client
 container to IPA server container:
 
-    docker run -h web.example.com --link freeipa-server-container:ipa -e PASSWORD=Secret123 -ti freeipa-client
+    docker run -h web.example.com --link freeipa-server-container:ipa -e PASSWORD=Secret123 -ti jumpbox
 
 The referenced server container must be running.
 
