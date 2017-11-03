@@ -54,7 +54,7 @@ if [ -f /etc/ipa/ca.crt ] ; then
 			echo "Hostname set to $HOSTNAME_IPA"
 		else
 			echo "The container hostname is $(hostname -f) and cannot set $HOSTNAME_IPA; run with -h." >&2
-			exit 1
+			#exit 1
 		fi
 	fi
 	echo "System is already FreeIPA-enrolled, starting the services."
@@ -76,7 +76,7 @@ else
 		HOSTNAME_OPTS=--hostname=$HOSTNAME_FQDN
 		if ! hostname $HOSTNAME_FQDN ; then
 			echo "Failed to set hostname to [$HOSTNAME_FQDN]" >&2
-			exit 1
+			#exit 1
 		fi
 	fi
 	echo "Test ldap first"
