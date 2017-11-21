@@ -68,15 +68,16 @@ else
 	if [ "$(hostname -f)" == "$(hostname -s)" ] ; then
 		if [ -z "$IPA_PORT_80_TCP_ADDR" ] ; then
 			echo "Hostname [$(hostname -f)] is not FQDN and no --link to IPA server specified." >&2
-			exit 2
-		fi
-		IPA=$( curl -si http://$IPA_PORT_80_TCP_ADDR/ | perl -lne 'm!^Location:\shttps?://(.+?)/! and print $1' )
-		DOMAIN=${IPA#*.}
-		HOSTNAME_FQDN=$( hostname ).$DOMAIN
-		HOSTNAME_OPTS=--hostname=$HOSTNAME_FQDN
-		if ! hostname $HOSTNAME_FQDN ; then
-			echo "Failed to set hostname to [$HOSTNAME_FQDN]" >&2
-			#exit 1
+			#exit 2
+		else
+			IPA=$( curl -si http://$IPA_PORT_80_TCP_ADDR/ | perl -lne 'm!^Location:\shttps?://(.+?)/! and print $1' )
+			DOMAIN=${IPA#*.}
+			HOSTNAME_FQDN=$( hostname ).$DOMAIN
+			HOSTNAME_OPTS=--hostname=$HOSTNAME_FQDN
+			if ! hostname $HOSTNAME_FQDN ; then
+				echo "Failed to set hostname to [$HOSTNAME_FQDN]" >&2
+				#exit 1
+			fi
 		fi
 	fi
 	echo "Test ldap first"
