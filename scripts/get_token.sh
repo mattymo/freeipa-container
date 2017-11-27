@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/bash -x
 
 decode_base64_url() {
   local len=$((${#1} % 4))
   local result="$1"
   if [ $len -eq 2 ]; then result="$1"'=='
-  elif [ $len -eq 3 ]; then result="$1"'=' 
+  elif [ $len -eq 3 ]; then result="$1"'='
   fi
   echo "$result" | tr '_-' '/+' | openssl enc -d -base64
 }
@@ -46,7 +46,7 @@ fi
 
 if [ -z "$SAB_K8S_PWD" ]; then
   echo -n "Enter password for $SAB_K8S_UID: "
-  read SAB_K8S_PWD
+  read -s SAB_K8S_PWD
 fi
 
 DEFAULT_SAB_K8S_DEX_HOST=https://dex.kube-system.svc.cluster.local
@@ -73,10 +73,11 @@ export SAB_K8S_DEX_HOST
 export SAB_K8S_DEX_WORKER_HOST
 
 # Only fetch token if it is not set or is expired
-if [ -z "$JWT" ] || is_expired "$JWT"; then
+if [ -z "$JWT" ] || ! [[ "$JWT" =~ "^([A-Za-z0-9+/]{4}){2}" ]] || is_expired "$JWT"; then
   JWT=$(dex-k8s.sh dex-login)
   if [ $? -ne 0 ]; then
     echo "Login failed!"
+    unset JWT
     return 1
   fi
   export JWT
