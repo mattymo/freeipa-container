@@ -33,15 +33,13 @@ KUBECTL=$(which --skip-alias kubectl)
 
 #export g_k8s_debug=1
 
-
-#TODO(mattymo): Use the following approach instead to get user email address:
-## SAB_K8S_UID=$(sudo bash -c "\
-##   kinit host/jumpbox.default.svc.cluster.local@CLUSTER.LOCAL -k -t /etc/krb5.keytab && \
-##   ipa user-show `whoami` --raw | grep mail | cut -d' ' -f4")
-
 if [ -z "$SAB_K8S_UID" ]; then
-  echo -n "Enter your email address: "
-  read SAB_K8S_UID
+  if [ -n "$EMAIL" ]; then
+    SAB_K8S_UID=$EMAIL
+  else
+    echo -n "Enter your email address: "
+    read SAB_K8S_UID
+  fi
 fi
 
 if [ -z "$SAB_K8S_PWD" ]; then
