@@ -7,7 +7,7 @@ MAINTAINER Jan Pazdziora
 ADD https://storage.googleapis.com/kubernetes-release/release/v1.8.3/bin/linux/amd64/kubectl /usr/local/bin/kubectl
 RUN chmod +x /usr/local/bin/kubectl
 
-RUN yum swap -y -- remove fakesystemd -- install systemd systemd-libs epel-release && yum clean all
+RUN yum -y install systemd systemd-libs epel-release && yum clean all
 
 # Install FreeIPA client and other utils
 RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' \
