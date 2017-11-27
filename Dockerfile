@@ -25,7 +25,10 @@ ADD ipa-client-configure-first /usr/sbin/ipa-client-configure-first
 ADD scripts/dex-k8s.sh /usr/local/bin/
 ADD scripts/get_token.sh /usr/local/bin/
 ADD scripts/kubectl.sh /etc/profile.d/
+ADD scripts/pam_set_email.sh /usr/local/sbin/
 
-RUN chmod -v +x /usr/bin/systemctl /usr/sbin/ipa-client-configure-first /usr/local/bin/*
+RUN echo "session    optional     pam_exec.so /usr/local/sbin/pam_set_email.sh" >> /etc/pam.d/sshd
+
+RUN chmod -v +x /usr/bin/systemctl /usr/sbin/ipa-client-configure-first /usr/local/bin/* /usr/local/sbin/*
 
 ENTRYPOINT /usr/sbin/ipa-client-configure-first
