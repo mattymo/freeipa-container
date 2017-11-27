@@ -47,6 +47,7 @@ fi
 if [ -z "$SAB_K8S_PWD" ]; then
   echo -n "Enter password for $SAB_K8S_UID: "
   read -s SAB_K8S_PWD
+  echo
 fi
 
 DEFAULT_SAB_K8S_DEX_HOST=https://dex.kube-system.svc.cluster.local
@@ -84,7 +85,7 @@ if [ -z "$JWT" ] || ! [[ "$JWT" =~ "^([A-Za-z0-9+/]{4}){2}" ]] || is_expired "$J
 fi
 
 # Only write kubeconfig if JWT is missing
-if ! grep -q "$JWT" ~/.kube/config; then
+if ! grep -q "$JWT" ~/.kube/config 2>/dev/null; then
   $KUBECTL config set-credentials $SAB_K8S_UID --token="$JWT" > /dev/null
   $KUBECTL config set-cluster default --server=https://kubernetes.default --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt > /dev/null
   $KUBECTL config set-context default --cluster=default --user=$SAB_K8S_UID > /dev/null
