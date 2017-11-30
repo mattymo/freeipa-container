@@ -86,11 +86,17 @@ else
 	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p admin -w "$PASSWORD" -U --enable-dns-updates --mkhomedir --force-join < /dev/null
 	cp -f /etc/hostname /etc/hostname.ipa-client
 	echo "FreeIPA-enrolled."
-        systemctl disable rhel-domainname.service
-        echo "Starting services after FreeIPA enrollment."
+	systemctl disable rhel-domainname.service
+	echo "Starting services after FreeIPA enrollment."
 	systemctl start-enabled
         echo "started"
 fi
+
+# Set domain for all users
+cat << EOF > /etc/profile.d/domain.sh
+#!/bin/bash
+export DOMAINNAME=$DOMAIN
+EOF
 
 if [ -z "$1" -o "$1" != "-s" ] ; then
 	if [ -t 0 ] ; then
