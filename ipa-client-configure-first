@@ -47,6 +47,13 @@ rm -f /run/systemctl-lite-running/*
 #	echo "nameserver $IPA_PORT_53_UDP_ADDR" > /etc/resolv.conf
 #fi
 
+EXPECTED_VARS="IPA_PORT_80_TCP_ADDR CLUSTER_DOMAIN IPA_CLIENT_INSTALL_OPTS"
+for var in $EXPECTED_VARS; do
+	if [ -z "${!var}" ]; then
+		echo "$var is not set. Cannot continue."
+		exit 1
+	fi
+done
 if [ -f /etc/ipa/ca.crt ] ; then
 	HOSTNAME_IPA=$(cat /etc/hostname.ipa-client)
 	if [ ! "$HOSTNAME_IPA" == "$(hostname -f)" ] ; then
@@ -81,8 +88,9 @@ else
 		fi
 	fi
 	echo "Test ldap first"
-	ldapsearch -x -h ipa.default.svc.cluster.local  -b dc=cluster,dc=local uid=admin
-        echo "Enroll in FreeIPA."
+	CLUSTER_USER_DN=$(echo $CLUSTER_DOMAIN | awk  '{printf "dc=";gsub(/\./,",dc=",$0);printf $0}')
+	ldapsearch -x -h $IPA -b $CLUSTER_USER_DN uid=admin
+	echo "Enroll in FreeIPA."
 	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p admin -w "$PASSWORD" -U --enable-dns-updates --mkhomedir --force-join < /dev/null
 	cp -f /etc/hostname /etc/hostname.ipa-client
 	echo "FreeIPA-enrolled."
