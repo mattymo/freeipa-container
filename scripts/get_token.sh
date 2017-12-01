@@ -49,16 +49,16 @@ if [ -z "$SAB_K8S_PWD" ]; then
 fi
 
 DEFAULT_SAB_K8S_DEX_HOST=https://dex.core.svc.cluster.local
-DEFAULT_SAB_K8S_DEX_WORKER_HOST=http://dex-worker.core.svc.cluster.local
+DEFAULT_SAB_K8S_DEX_WORKER_HOST=https://dex-worker.core.svc.cluster.local:5555
 if [ -z "$SAB_K8S_DEX_HOST" ]; then
   if [ -n "$DOMAINNAME" ]; then
     DEX_DOMAINNAME="core.svc.$(echo $DOMAINNAME | cut -d'.' -f3-)"
     SAB_K8S_DEX_HOST="https://dex.${DEX_DOMAINNAME}"
-    SAB_K8S_DEX_WORKER_HOST="https://dex-worker.${DEX_DOMAINNAME}"
+    SAB_K8S_DEX_WORKER_HOST="https://dex-worker.${DEX_DOMAINNAME}:5555"
   else
     echo -n "Enter Dex hostname (example: https://dex.core.svc.cluster.local): "
     read SAB_K8S_DEX_HOST
-    echo -n "Enter Dex Worker hostname (example: https://dex-worker.core.svc.cluster.local): "
+    echo -n "Enter Dex Worker hostname (example: https://dex-worker.core.svc.cluster.local:5555): "
     read SAB_K8S_DEX_WORKER_HOST
     # Set to default if not specified
     SAB_K8S_DEX_HOST=${SAB_K8S_DEX_HOST:-$DEFAULT_SAB_K8S_DEX_HOST}
