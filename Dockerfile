@@ -21,6 +21,9 @@ RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' \
     yum install -y https://zoom.us/client/latest/zoom_x86_64.rpm && \
     yum clean all
 
+# Install helm
+RUN curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+
 ADD dbus.service /etc/systemd/system/dbus.service
 RUN ln -sf dbus.service /etc/systemd/system/messagebus.service
 RUN ln -sf /bin/true /bin/hostnamectl
