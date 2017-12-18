@@ -13,7 +13,16 @@ RUN yum -y install systemd systemd-libs epel-release && yum clean all
 RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' \
     'perl(Time::HiRes)' openssh-clients openssh-server openldap-clients \
     sudo less which jq screen vim xterm \
-    && yum clean all
+    git xinetd socat make dos2unix httpd nano elinks pytz glibc.i686 zip \
+    unzip cpanminus file mailx mutt bind-utils vim python2 python-pip \
+    python-virtualenv samba samba-client expect ipmitool \
+    x2goserver x2goserver-xsession firefox icedtea-web gnome-terminal && \
+    yum groupinstall -y xfce mate "Development Tools" && \
+    yum install -y https://zoom.us/client/latest/zoom_x86_64.rpm && \
+    yum clean all
+
+# Install helm
+RUN curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
 
 ADD dbus.service /etc/systemd/system/dbus.service
 RUN ln -sf dbus.service /etc/systemd/system/messagebus.service
