@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 decode_base64_url() {
   local len=$((${#1} % 4))
@@ -49,6 +49,7 @@ if [ -z "$SAB_K8S_PWD" ]; then
 fi
 
 DEFAULT_SAB_K8S_DEX_HOST=https://dex.core.svc.cluster.local
+# Token getter script changes port to 5555
 DEFAULT_SAB_K8S_DEX_WORKER_HOST=https://dex-worker.core.svc.cluster.local
 if [ -z "$SAB_K8S_DEX_HOST" ]; then
   if [ -n "$DOMAINNAME" ]; then
