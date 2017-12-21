@@ -1,0 +1,33 @@
+docker_build: &docker_build
+    image: plugins/docker
+    registry: docker-dev.core.rcsops.com
+    repo: docker-dev.core.rcsops.com/${DRONE_REPO_NAME}
+    auto_tag: true
+
+pipeline:
+  verify:
+    <<: *docker_build
+    environment:
+      - http_proxy=http://10.131.236.9:3128
+      - https_proxy=http://10.131.236.9:3128
+      - no_proxy=localhost,127.0.0.1,docker-dev.core.rcsops.com
+      - PLUGIN_DRY_RUN=true
+    when:
+      event: pull_request
+
+  publish:
+    <<: *docker_build
+    secrets:
+      - docker_username
+      - docker_password
+    environment:
+      - http_proxy=http://10.131.236.9:3128
+      - https_proxy=http://10.131.236.9:3128
+      - no_proxy=localhost,127.0.0.1,docker-dev.core.rcsops.com
+    when:
+      event: 
+        - tag
+        - push
+      branch:
+        - master
+        - refs/tags/*
