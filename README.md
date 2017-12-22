@@ -1,3 +1,5 @@
+[![Build Status](http://server-drone.service.drhm01.ecsops.com/api/badges/pyrex-containers/jumpbox-docker/status.svg)](http://server-drone.service.drhm01.ecsops.com/pyrex-containers/jumpbox-docker)
+
 # Pyrex ssh jumpbox
 
 This is a docker container which is enrolled in FreeIPA. If your user account is 
