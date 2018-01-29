@@ -7,10 +7,11 @@ ENV K8S_VERSION=v1.8.4 \
     IDRAC_FILE=OM-MgmtStat-Dell-Web-LX-9.1.0-2771_A00.tar.gz
 
 # Add artifactory centos mirror
-ADD CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
+ADD CentOS-Base.repo /etc/yum.repos.d/CentOS-Base-artifactory.repo
 
 # Upgrade and install EPEL
-RUN yum -y upgrade --disableplugin=fastestmirror  && \
+RUN rm /etc/yum.repos.d/CentOS-Base.repo && \
+    yum -y upgrade --disableplugin=fastestmirror  && \
     yum -y install --disableplugin=fastestmirror \
         systemd \
         systemd-libs \
@@ -108,4 +109,6 @@ RUN tar -zxf /tmp/${IDRAC_FILE} && \
     find linux -type f -name "*el7*" -exec yum -y localinstall --disableplugin=fastestmirror {} + && \
     rm -r linux docs /tmp/${IDRAC_FILE}
 
+# Reset yum repo
+RUN yum reinstall -y centos-release && rm -f /etc/yum.repos.d/CentOS-Base-artifactory.repo
 ENTRYPOINT /usr/sbin/ipa-client-configure-first
