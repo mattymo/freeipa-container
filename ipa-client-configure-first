@@ -31,10 +31,16 @@ function stop_running () {
 }
 trap stop_running TERM
 
+# Reinstall openssh-server when mounting on persistent volume
+rpm -V openssh-server --nofiledigest --nodeps --noscript --nomtime --nosize --nomode || yum reinstall -y openssh-server
+
 # Set up ssh host keys
-ssh-keygen -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
-ssh-keygen -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
-ssh-keygen -N "" -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
+for key in rsa dsa ecdsa; do
+  path="/etc/ssh/ssh_host_${key}_key"
+  if ! [ -e "$path" ];then
+    ssh-keygen -N "" -t $key -f $path
+  fi
+done
 
 systemctl enable sshd.service
 systemctl enable dbus.service
