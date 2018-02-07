@@ -44,6 +44,7 @@ RUN yum -y install --disableplugin=fastestmirror \
          man \
          mutt \
          nano \
+         nmap-ncat \
          openldap-clients \
          openssh-clients \
          openssh-server \
