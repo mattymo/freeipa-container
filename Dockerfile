@@ -9,6 +9,10 @@ ENV K8S_VERSION=v1.8.4 \
 # Add artifactory centos mirror
 ADD CentOS-Base.repo /etc/yum.repos.d/CentOS-Base-artifactory.repo
 
+# Add Flash repo
+RUN rpm -ivh http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm && \
+    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-adobe-linux
+
 # Upgrade and install EPEL
 RUN rm /etc/yum.repos.d/CentOS-Base.repo && \
     yum -y upgrade --disableplugin=fastestmirror  && \
@@ -23,14 +27,18 @@ RUN rm /etc/yum.repos.d/CentOS-Base.repo && \
 RUN yum -y install --disableplugin=fastestmirror \
          'perl(Data::Dumper)' \
          'perl(Time::HiRes)' \
+         alsa-plugins-pulseaudio \
          bind-utils \
          cpanminus \
-         dbus-python perl \
+         dbus-python \
+         dejavu-lgc-sans-fonts \
+         dejavu-lgc-sans-mono-fonts \
          dos2unix \
          elinks \
          expect \
          file \
          firefox \
+         flash-plugin \
          git \
          glibc.i686 \
          gnome-terminal \
@@ -48,6 +56,7 @@ RUN yum -y install --disableplugin=fastestmirror \
          openldap-clients \
          openssh-clients \
          openssh-server \
+         perl \
          python-pip \
          python-virtualenv \
          python2 \
