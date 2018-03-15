@@ -66,6 +66,7 @@ RUN yum -y install --disableplugin=fastestmirror \
          screen \
          socat \
          sudo \
+         tmux \
          tree \
          unzip \
          vim \
