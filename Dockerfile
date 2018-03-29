@@ -50,6 +50,7 @@ RUN yum -y install --disableplugin=fastestmirror \
          mailx \
          make \
          man \
+         mtr \
          mutt \
          nano \
          nmap-ncat \
