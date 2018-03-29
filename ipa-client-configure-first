@@ -54,6 +54,8 @@ rm -f /run/systemctl-lite-running/*
 #fi
 
 EXPECTED_VARS="IPA_PORT_80_TCP_ADDR CLUSTER_DOMAIN IPA_CLIENT_INSTALL_OPTS"
+IPA_JOIN_USER=${IPA_JOIN_USER:-admin}
+
 for var in $EXPECTED_VARS; do
 	if [ -z "${!var}" ]; then
 		echo "$var is not set. Cannot continue."
@@ -97,7 +99,7 @@ else
 	CLUSTER_USER_DN=$(echo $CLUSTER_DOMAIN | awk  '{printf "dc=";gsub(/\./,",dc=",$0);printf $0}')
 	ldapsearch -x -h $IPA -b $CLUSTER_USER_DN uid=admin
 	echo "Enroll in FreeIPA."
-	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p admin -w "$PASSWORD" -U --enable-dns-updates --mkhomedir --force-join < /dev/null
+	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p "$IPA_JOIN_USER" -w "$PASSWORD" -U --enable-dns-updates --mkhomedir --force-join < /dev/null
 	cp -f /etc/hostname /etc/hostname.ipa-client
 	echo "FreeIPA-enrolled."
 	systemctl disable rhel-domainname.service
