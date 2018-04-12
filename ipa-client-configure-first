@@ -37,7 +37,7 @@ DATA=/data
 # Set up data dir
 (
 	cd $DATA
-	grep '/$' /etc/volume-data-list | sed 's!^!.!' | xargs mkdir -p
+	grep '/$' /etc/volume-data-list | sed 's!^!.!' | xargs --no-run-if-empty mkdir -p 
 )
 
 # Copy data files over, but don't replace

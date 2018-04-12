@@ -1,3 +1,3 @@
-/etc/ssh
-/var/log
-/home
+/etc/ssh/
+/var/log/
+/home/
