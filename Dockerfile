@@ -7,15 +7,16 @@ ENV K8S_VERSION=v1.8.4 \
     IDRAC_FILE=OM-MgmtStat-Dell-Web-LX-9.1.0-2771_A00.tar.gz
 
 # Add artifactory centos mirror
-ADD CentOS-Base.repo /etc/yum.repos.d/CentOS-Base-artifactory.repo
+#ADD CentOS-Base.repo /etc/yum.repos.d/CentOS-Base-artifactory.repo
 
 # Add Flash repo
 RUN rpm -ivh http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm && \
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-adobe-linux
 
 # Upgrade and install EPEL
-RUN rm /etc/yum.repos.d/CentOS-Base.repo && \
-    yum -y upgrade --disableplugin=fastestmirror  && \
+#RUN rm /etc/yum.repos.d/CentOS-Base.repo && \
+#    yum -y upgrade --disableplugin=fastestmirror  && \
+RUN  yum -y upgrade --disableplugin=fastestmirror  && \
     yum -y install --disableplugin=fastestmirror \
         systemd \
         systemd-libs \
@@ -122,7 +123,7 @@ RUN tar -zxf /tmp/${IDRAC_FILE} && \
     rm -r linux docs /tmp/${IDRAC_FILE}
 
 # Reset yum repo
-RUN yum reinstall -y centos-release && rm -f /etc/yum.repos.d/CentOS-Base-artifactory.repo
+#RUN yum reinstall -y centos-release && rm -f /etc/yum.repos.d/CentOS-Base-artifactory.repo
 
 # Prepare for persistent data dirs
 COPY volume-data-list /etc/
@@ -130,7 +131,6 @@ RUN set -e ; cd / ; mkdir /data-template ; cat /etc/volume-data-list | while rea
 RUN rm -rf /var/log-removed
 RUN sed -i 's!^d /var/log.*!L /var/log - - - - /data/var/log!' /usr/lib/tmpfiles.d/var.conf
 # Workaround 1286602
-RUN mv /usr/lib/tmpfiles.d/journal-nocow.conf /usr/lib/tmpfiles.d/journal-nocow.conf.disabled
 RUN rm -f /data-template/var/lib/systemd/random-seed
 
 ENTRYPOINT /usr/sbin/ipa-client-configure-first

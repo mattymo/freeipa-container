@@ -42,7 +42,7 @@ DATA=/data
 
 # Copy data files over, but don't replace
 if ! [ -f /etc/ipa/ca.crt ] ; then
-        ( cd $DATA_TEMPLATE && tar cf - . ) | ( cd $DATA && tar xfk - )
+        ( cd $DATA_TEMPLATE && tar cf - . ) | ( cd $DATA && tar xfk - ) || :
 fi
 
 # Set up ssh host keys
