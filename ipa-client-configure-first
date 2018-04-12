@@ -31,8 +31,19 @@ function stop_running () {
 }
 trap stop_running TERM
 
-# Reinstall openssh-server when mounting on persistent volume
-rpm -V openssh-server --nofiledigest --nodeps --noscript --nomtime --nosize --nomode || yum reinstall -y openssh-server
+
+DATA_TEMPLATE=/data-template
+DATA=/data
+# Set up data dir
+(
+	cd $DATA
+	grep '/$' /etc/volume-data-list | sed 's!^!.!' | xargs mkdir -p
+)
+
+# Copy data files over, but don't replace
+if ! [ -f /etc/ipa/ca.crt ] ; then
+        ( cd $DATA_TEMPLATE && tar cf - . ) | ( cd $DATA && tar xfk - )
+fi
 
 # Set up ssh host keys
 for key in rsa dsa ecdsa; do
