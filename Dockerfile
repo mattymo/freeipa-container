@@ -123,4 +123,13 @@ RUN tar -zxf /tmp/${IDRAC_FILE} && \
 
 # Reset yum repo
 RUN yum reinstall -y centos-release && rm -f /etc/yum.repos.d/CentOS-Base-artifactory.repo
+
+# Prepare for persistent data dirs
+COPY volume-data-list /etc/
+RUN set -e ; cd / ; mkdir /data-template ; cat /etc/volume-data-list | while read i ; do echo $i ; if [ -e $i ] ; then tar cf - .$i | ( cd /data-template && tar xf - ) ; else mkdir -p /data-template$( dirname $i ) ; fi ; mkdir -p $( dirname $i ) ; if [ "$i" == /var/log/ ] ; then mv /var/log /var/log-removed ; else rm -rf $i ; fi ; ln -sf /data${i%/} ${i%/} ; done
+RUN rm -rf /var/log-removed
+RUN sed -i 's!^d /var/log.*!L /var/log - - - - /data/var/log!' /usr/lib/tmpfiles.d/var.conf
+# Workaround 1286602
+RUN rm -f /data-template/var/lib/systemd/random-seed
+
 ENTRYPOINT /usr/sbin/ipa-client-configure-first
