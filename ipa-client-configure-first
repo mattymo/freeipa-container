@@ -96,13 +96,19 @@ else
 			echo "Hostname [$(hostname -f)] is not FQDN and no --link to IPA server specified." >&2
 			#exit 2
 		else
-			IPA=$( curl -si http://$IPA_PORT_80_TCP_ADDR/ | perl -lne 'm!^Location:\shttps?://(.+?)/! and print $1' )
-			DOMAIN=${IPA#*.}
-			HOSTNAME_FQDN=$( hostname ).$DOMAIN
-			HOSTNAME_OPTS=--hostname=$HOSTNAME_FQDN
-			if ! hostname $HOSTNAME_FQDN ; then
-				echo "Failed to set hostname to [$HOSTNAME_FQDN]" >&2
-				#exit 1
+                        if ! echo "$IPA_CLIENT_INSTALL_OPTS" | grep -q -- "--hostname"; then
+				IPA=$( curl -si http://$IPA_PORT_80_TCP_ADDR/ | perl -lne 'm!^Location:\shttps?://(.+?)/! and print $1' )
+				DOMAIN=${IPA#*.}
+				HOSTNAME_FQDN=$( hostname ).$DOMAIN
+				HOSTNAME_OPTS=--hostname=$HOSTNAME_FQDN                       
+				if ! hostname $HOSTNAME_FQDN ; then
+					echo "Failed to set hostname to [$HOSTNAME_FQDN]" >&2
+					#exit 1
+				fi
+			else
+				IPA="$IPA_PORT_80_TCP_ADDR"
+				DOMAIN=${CLUSTER_DOMAIN}
+				
 			fi
 		fi
 	fi
@@ -110,7 +116,7 @@ else
 	CLUSTER_USER_DN=$(echo $CLUSTER_DOMAIN | awk  '{printf "dc=";gsub(/\./,",dc=",$0);printf $0}')
 	ldapsearch -x -h $IPA -b $CLUSTER_USER_DN uid=admin
 	echo "Enroll in FreeIPA."
-	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p "$IPA_JOIN_USER" -w "$PASSWORD" -U --enable-dns-updates --mkhomedir --force-join < /dev/null
+	/usr/sbin/ipa-client-install $IPA_CLIENT_INSTALL_OPTS $HOSTNAME_OPTS -p "$IPA_JOIN_USER" -w "$PASSWORD" -U --enable-dns-updates --mkhomedir --force-join --force --no-ntp < /dev/null
 	cp -f /etc/hostname /etc/hostname.ipa-client
 	echo "FreeIPA-enrolled."
 	systemctl disable rhel-domainname.service
