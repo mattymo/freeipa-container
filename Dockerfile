@@ -92,6 +92,7 @@ ADD systemctl /usr/bin/systemctl
 ADD ipa-client-configure-first /usr/sbin/ipa-client-configure-first
 RUN ln -sf dbus.service /etc/systemd/system/messagebus.service && \
     ln -sf /bin/true /bin/hostnamectl
+RUN mkdir /run/dbus
 
 # Custom PE scripts
 ADD scripts/dex-k8s.sh /usr/local/bin/
