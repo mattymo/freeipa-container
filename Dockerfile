@@ -2,8 +2,8 @@
 FROM centos:centos7
 MAINTAINER Jan Pazdziora
 
-ENV K8S_VERSION=v1.8.4 \
-    HELM_VERSION=v2.7.2 \
+ENV K8S_VERSION=v1.9.6 \
+    HELM_VERSION=v2.9.1 \
     IDRAC_FILE=OM-MgmtStat-Dell-Web-LX-9.1.0-2771_A00.tar.gz
 
 # Add artifactory centos mirror
