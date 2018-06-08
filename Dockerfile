@@ -28,6 +28,8 @@ RUN yum -y install --disableplugin=fastestmirror \
          'perl(Data::Dumper)' \
          'perl(Time::HiRes)' \
          alsa-plugins-pulseaudio \
+         bash-completion \
+         bash-completion-extras \
          bind-utils \
          cpanminus \
          dbus-python \
