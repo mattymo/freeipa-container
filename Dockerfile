@@ -3,8 +3,7 @@ FROM centos:centos7
 MAINTAINER Jan Pazdziora
 
 ENV K8S_VERSION=v1.9.6 \
-    HELM_VERSION=v2.9.1 \
-    IDRAC_FILE=OM-MgmtStat-Dell-Web-LX-9.1.0-2771_A00.tar.gz
+    HELM_VERSION=v2.9.1 
 
 # Add artifactory centos mirror
 ADD CentOS-Base.repo /etc/yum.repos.d/CentOS-Base-artifactory.repo
@@ -117,11 +116,9 @@ RUN tar -zxf /tmp/helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64/helm && \
     rm /tmp/helm-${HELM_VERSION}-linux-amd64.tar.gz
 
 # iDRAC
-ADD https://downloads.dell.com/FOLDER04651962M/1/${IDRAC_FILE} /tmp
-RUN tar -zxf /tmp/${IDRAC_FILE} && \
-    rpm --import linux/RPM-GPG-KEY && \
-    find linux -type f -name "*el7*" -exec yum -y localinstall --disableplugin=fastestmirror {} + && \
-    rm -r linux docs /tmp/${IDRAC_FILE}
+ADD http://linux.dell.com/repo/hardware/latest/bootstrap.cgi /tmp
+RUN bash /tmp/bootstrap.cgi && \
+    yum install -y --disableplugin=fastestmirror srvadmin-idracadm
 
 # Reset yum repo
 RUN yum reinstall -y centos-release && rm -f /etc/yum.repos.d/CentOS-Base-artifactory.repo
