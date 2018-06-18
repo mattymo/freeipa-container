@@ -21,6 +21,8 @@ RUN rm /etc/yum.repos.d/CentOS-Base.repo && \
         epel-release && \
     yum clean all
 
+# FIXME(mattymo): Remove this after RHBZ 1589486 is resolved
+RUN yum -y --enablerepo=epel-testing install atril atril-caja
 # Install FreeIPA client and other utils
 # Additional software packages should be added here
 RUN yum -y install --disableplugin=fastestmirror \
