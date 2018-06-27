@@ -52,7 +52,7 @@ DEFAULT_SAB_K8S_DEX_HOST=https://dex.core.svc.cluster.local
 DEFAULT_SAB_K8S_DEX_WORKER_HOST=https://dex-worker.core.svc.cluster.local
 if [ -z "$SAB_K8S_DEX_HOST" ]; then
   if [ -n "$DOMAINNAME" ]; then
-    DEX_DOMAINNAME="core.svc.$(echo $DOMAINNAME | cut -d'.' -f3-)"
+    DEX_DOMAINNAME="core.svc.${DOMAINAME##*svc.}"
     SAB_K8S_DEX_HOST="https://dex.${DEX_DOMAINNAME}"
     SAB_K8S_DEX_WORKER_HOST="https://dex-worker.${DEX_DOMAINNAME}"
   else
