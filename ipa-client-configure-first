@@ -126,7 +126,7 @@ else
 fi
 
 # Set domain for all users
-cat << EOF > /etc/profile.d/domain.sh
+cat << EOF > /etc/profile.d/domain.sh > /etc/zsh/zshenv
 #!/bin/bash
 export DOMAINNAME=$DOMAIN
 EOF

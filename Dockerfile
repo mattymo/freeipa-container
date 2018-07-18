@@ -101,6 +101,7 @@ ADD scripts/dex-k8s.sh /usr/local/bin/
 ADD scripts/get_token.sh /usr/local/bin/
 ADD scripts/kubectl.sh /etc/profile.d/
 ADD scripts/pam_set_email.sh /usr/local/sbin/
+COPY scripts/kubectl.sh /etc/zsh/zshrc
 
 RUN echo "session    optional     pam_exec.so /usr/local/sbin/pam_set_email.sh" >> /etc/pam.d/sshd
 

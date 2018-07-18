@@ -2,14 +2,26 @@
 username=$PAM_USER
 homedir=/home/$username
 
+# Rather than query multiple times, store the info here
+USER_INFO=$(ipa user-show $username --raw)
+
+# Default to bash, but check for others
+LOGIN_SHELL=bash
+DETECT_SHELL=$(echo "$USER_INFO" | awk -F'[:/]' '/loginshell/ {print $NF}')
+if [ ! -z "$DETECT_SHELL" ]
+then
+    LOGIN_SHELL=$DETECT_SHELL
+fi
+STARTUP_FILE=$homedir/.${DETECT_SHELL}_profile
+
 # Exit early if email is already set
-grep -q "export EMAIL=" $homedir/.bash_profile && exit 0
+[ -f $STARTUP_FILE ] && grep -q "export EMAIL=" $STARTUP_FILE && exit 0
 
 KEYTAB=/etc/krb5.keytab
 PRINCIPAL=$(klist -k "$KEYTAB" | grep host | head -1 | awk '{print $2}')
 kinit -k -t "$KEYTAB" "$PRINCIPAL"
 
 # Use ipa to get email address for user
-email=$(ipa user-show $username --raw | grep mail: | awk '{print $2}')
-echo "export EMAIL=$email" >> $homedir/.bash_profile
+email=$(echo "$USER_INFO" | grep mail: | awk '{print $2}')
+echo "export EMAIL=$email" >> $STARTUP_FILE
 kdestroy
