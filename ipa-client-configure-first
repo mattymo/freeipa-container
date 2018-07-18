@@ -122,11 +122,11 @@ else
 	systemctl disable rhel-domainname.service
 	echo "Starting services after FreeIPA enrollment."
 	systemctl start-enabled
-        echo "started"
+	echo "started"
 fi
 
 # Set domain for all users
-cat << EOF > /etc/profile.d/domain.sh >> /etc/zsh/zshrc
+cat << EOF > /etc/profile.d/domain.sh
 export DOMAINNAME=$DOMAIN
 EOF
 
