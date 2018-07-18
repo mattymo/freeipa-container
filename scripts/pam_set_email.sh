@@ -12,7 +12,9 @@ if [ ! -z "$DETECT_SHELL" ]
 then
     LOGIN_SHELL=$DETECT_SHELL
 fi
-STARTUP_FILE=$homedir/.${DETECT_SHELL}_profile
+
+# Using rc file because we also want non-login shells to get this setup
+STARTUP_FILE=$homedir/.${DETECT_SHELL}rc
 
 # Exit early if email is already set
 [ -f $STARTUP_FILE ] && grep -q "export EMAIL=" $STARTUP_FILE && exit 0
