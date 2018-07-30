@@ -156,7 +156,7 @@ sab-k8s-x-dex-login() {
 
   # login
   [ $g_k8s_debug -eq 1 ] && echo "***Issue login to '$l_login_uri'"
-  curl -v -k -X POST -d "login=$g_k8s_uid" -d "password=$g_k8s_pwd" -e "$l_login_uri" "$l_login_uri" >"$l_work_file" 2>&1
+  curl -v -k -X POST -d "login=$g_k8s_uid" --data-urlencode "password=$g_k8s_pwd" -e "$l_login_uri" "$l_login_uri" >"$l_work_file" 2>&1
   l_rc=$?
   [ $g_k8s_debug -eq 1 ] && cat "$l_work_file" && echo '' && echo '' && echo ''
   [ $l_rc -ne 0 ] && rm -f "$l_work_file" && echo "Curl problem in login" && return $l_rc
