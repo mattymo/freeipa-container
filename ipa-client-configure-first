@@ -129,6 +129,10 @@ else
 	systemctl disable rhel-domainname.service
 	echo "Starting services after FreeIPA enrollment."
 	systemctl start-enabled
+	# rsyslog startup workaround
+	systemctl stop rsyslog
+	killall rsyslogd
+	service rsyslog start
 	echo "started"
 fi
 
