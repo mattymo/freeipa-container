@@ -65,6 +65,7 @@ RUN yum -y install --disableplugin=fastestmirror \
          python-virtualenv \
          python2 \
          pytz \
+         rsyslog \
          samba \
          samba-client \
          screen \
@@ -95,6 +96,10 @@ ADD systemctl /usr/bin/systemctl
 ADD ipa-client-configure-first /usr/sbin/ipa-client-configure-first
 RUN ln -sf dbus.service /etc/systemd/system/messagebus.service && \
     ln -sf /bin/true /bin/hostnamectl
+
+# Logging tweaks
+RUN cp /lib/systemd/system/rsyslog.service /etc/systemd/system/syslog.service
+ADD syslog.socket /etc/systemd/system/syslog.socket
 
 # Custom PE scripts
 ADD scripts/dex-k8s.sh /usr/local/bin/
