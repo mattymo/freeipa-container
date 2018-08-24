@@ -53,8 +53,15 @@ for key in rsa dsa ecdsa; do
   fi
 done
 
+systemd-machine-id-setup
+
 systemctl enable sshd.service
 systemctl enable dbus.service
+systemctl enable systemd-journald.socket
+systemctl enable systemd-journald.service
+systemctl enable syslog.socket
+systemctl enable rsyslog.service
+
 
 rm -rf /var/run/*.pid
 rm -f /run/systemctl-lite-running/*
