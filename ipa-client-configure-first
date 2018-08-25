@@ -51,6 +51,7 @@ for key in rsa dsa ecdsa; do
   if ! [ -e "$path" ];then
     ssh-keygen -N "" -t $key -f $path
   fi
+  chmod 600 $path
 done
 
 systemd-machine-id-setup
@@ -148,6 +149,6 @@ if [ -z "$1" -o "$1" != "-s" ] ; then
 		/bin/bash
 	else
 		echo 'Tailing system logs.'
-		tail --silent -n 0 -f --retry /var/log/sssd/*.log /var/log/systemctl.log 2> /dev/null < /dev/null
+		tail --silent -n 0 -f --retry /var/log/sssd/*.log /var/log/messages /var/log/secure /var/log/systemctl.log 2> /dev/null < /dev/null
 	fi
 fi
