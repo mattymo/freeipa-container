@@ -46,7 +46,7 @@ if ! [ -f /etc/ipa/ca.crt ] ; then
 fi
 
 # Set up ssh host keys
-for key in rsa dsa ecdsa; do
+for key in rsa dsa ecdsa ed25519; do
   path="/etc/ssh/ssh_host_${key}_key"
   if ! [ -e "$path" ];then
     ssh-keygen -N "" -t $key -f $path
