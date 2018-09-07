@@ -70,6 +70,7 @@ RUN yum -y install --disableplugin=fastestmirror \
          samba-client \
          screen \
          socat \
+         sshpass \
          sudo \
          tmux \
          tree \
