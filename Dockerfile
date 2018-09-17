@@ -2,7 +2,7 @@
 FROM centos:centos7
 MAINTAINER Jan Pazdziora
 
-ENV K8S_VERSION=v1.9.6 \
+ENV K8S_VERSION=v1.11.3 \
     HELM_VERSION=v2.9.1 
 
 # Add artifactory centos mirror
